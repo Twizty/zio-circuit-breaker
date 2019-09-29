@@ -7,6 +7,18 @@ import zio.clock.Clock
 import zio.duration.Duration
 import zio.{RefM, UIO, URIO, ZIO, clock}
 
+/**
+  * Circuit Breaker definition.
+  *
+  * @param failures list of timestamps in milliseconds when failures occurred
+  * @param successes list of timestamps in milliseconds when successes occurred
+  * @param timeoutToRef time in milliseconds when circuit breaker will become available,
+  *                      if less than current time then it is available
+  * @param timeout time to wait when error ratio reaches @ratio
+  * @param resetTimeout aggregation time
+  * @param ratio value between 0 and 1, percent of failed actions to start using @timeout
+  * @param handleErrorsFrom how many @failures + @successes should be before using @timeout
+  */
 class CircuitBreaker private (val failures: RefM[Vector[Long]],
                               val successes: RefM[Vector[Long]],
                               val timeoutToRef: RefM[Long],
